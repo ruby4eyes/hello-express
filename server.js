@@ -2,6 +2,7 @@ const express = require('express');
 const hbs = require('hbs');
 const fs = require('fs');
 var app = express();
+const port = process.env.PORT || 3000;
 
 hbs.registerPartials(__dirname+'/views/partials');
 hbs.registerHelper('getCurrentYear', ()=>{
@@ -19,7 +20,9 @@ app.use((req, res, next) => {
     var log = `${now}: ${req.method} ${req.url}`;
   
     console.log(log);
-    fs.appendFile('server.log', log + '\n');
+    fs.appendFile('server.log', log + '\n', (err)=>{
+        console.log("failed to write log into server.log")
+    });
     next();
   });
   
@@ -52,10 +55,10 @@ app.get('/about', (req, res)=>{
 });
 
 
-app.listen(3000, (err)=>{
+app.listen(port, (err)=>{
     if(err){
         console.log(err);
     }else{
-    console.log("server started at 3000");
+    console.log(`server started at ${port}`);
     }
 });
